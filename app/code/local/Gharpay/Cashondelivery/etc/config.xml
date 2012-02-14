@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+       <Gharpay_Cashondelivery>
+<!-- declare module's version information for database updates -->
+          <version>0.1.0</version>
+       </Gharpay_Cashondelivery>
+    </modules>
+    <global>
+<!-- declare model group for new module -->
+        <models>
+<!-- model group alias to be used in Mage::getModel('newmodule/...') -->
+            <cashondelivery>
+<!-- base class name for the model group -->
+                <class>Gharpay_Cashondelivery_Model</class>
+            </cashondelivery>    
+        </models>
+        <helpers>
+            <cashondelivery>
+                <class>Gharpay_Cashondelivery_Helper</class>
+            </cashondelivery>
+        </helpers> 
+<!-- declare resource setup for new module -->
+        <resources>
+<!-- resource identifier -->
+            <cashondelivery_setup>
+<!-- specify that this resource is a setup resource and used for upgrades -->
+                <setup>
+<!-- which module to look for install/upgrade files in -->
+                    <module>Gharpay_Cashondelivery</module>
+                </setup>
+<!-- specify database connection for this resource -->
+                <connection>
+<!-- do not create new connection, use predefined core setup connection -->
+                    <use>core_setup</use>
+                </connection>
+            </cashondelivery_setup>
+            <cashondelivery_write>
+                <connection>
+                  <use>core_write</use>
+                </connection>
+            </cashondelivery_write>
+            <cashondelivery_read>
+               <connection>
+                <use>core_read</use>
+              </connection>
+            </cashondelivery_read>
+        </resources>
+    </global>
+ 
+<!-- declare default configuration values for this module -->
+    <default>
+        <payment>
+            <cashondelivery>
+                <active>1</active>
+                <model>cashondelivery/createorder</model>
+                <order_status>pending</order_status>
+                <payment_action>authorize_capture</payment_action>
+                <title>Gharpay</title>                
+            </cashondelivery>
+         </payment>
+    </default>
+</config>
