@@ -1,8 +1,8 @@
 <?php 
 include_once 'app/Mage.php';
-require_once(Mage::getBaseDir('lib').'\Gharpay\Array2Xml.php');
-require_once(Mage::getBaseDir('lib').'\Gharpay\Xml2Array.php');
-require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').'\Model\Gharpayorders.php');
+require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Array2Xml.php');
+require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Xml2Array.php');
+require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
 
 class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method_Abstract
 {
@@ -14,7 +14,8 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
     
     public function validate()
     {
-       $paymentInfo = $this->getInfoInstance();
+        $title = Mage::getStoreConfig('payment/cashondelivery/title',Mage::app()->getStore());
+        $paymentInfo = $this->getInfoInstance();
          if ($paymentInfo instanceof Mage_Sales_Model_Order_Payment) {
              $postCode = $paymentInfo->getOrder()->getBillingAddress()->getPostcode();
          } 
@@ -22,7 +23,7 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
              $postCode = $paymentInfo->getQuote()->getBillingAddress()->getPostcode();
          }
          if (!$this->canUseForPostCode($postCode)) {
-             Mage::throwException($this->_getHelper()->__('Sorry ! Gharpay Service is not available in your area'));
+             Mage::throwException($this->_getHelper()->__('Sorry ! '.$title.' Service is not available in your area'));
          }
          return $this;
     }

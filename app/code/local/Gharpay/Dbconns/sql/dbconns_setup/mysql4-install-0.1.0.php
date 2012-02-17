@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS gharpay_prop_value (
   PRIMARY KEY (prop_value_id)
 );
 
-insert into gharpay_orders (created_at,updated_at,client_order_id,gharpay_order_id) values ('2012-02-15 00:00:00','2012-02-15 00:00:00', 100000022,'GW-86-0004626-602');
 ");
 //demo 
 Mage::getModel('core/url_rewrite')->setId(null);
