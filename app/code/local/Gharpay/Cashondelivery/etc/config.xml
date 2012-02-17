@@ -47,7 +47,6 @@
             </cashondelivery_read>
         </resources>
     </global>
- 
 <!-- declare default configuration values for this module -->
     <default>
         <payment>
@@ -56,7 +55,8 @@
                 <model>cashondelivery/createorder</model>
                 <order_status>pending</order_status>
                 <payment_action>authorize_capture</payment_action>
-                <title>Gharpay</title>                
+                <title>Gharpay</title>
+                <gharpay_uri>services.gharpay.in</gharpay_uri>
             </cashondelivery>
          </payment>
     </default>
