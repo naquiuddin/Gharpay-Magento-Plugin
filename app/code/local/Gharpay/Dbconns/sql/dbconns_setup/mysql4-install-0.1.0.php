@@ -1,7 +1,7 @@
 <?php
 $installer = $this;
 $installer->startSetup();
-$installer->run("CREATE TABLE gharpay_orders (
+$installer->run("CREATE TABLE IF NOT EXISTS gharpay_orders (
    gharpay_id INT UNSIGNED AUTO_INCREMENT NOT NULL,
    created_at DATE NOT NULL,
    updated_at DATE NOT NULL,
@@ -10,13 +10,13 @@ $installer->run("CREATE TABLE gharpay_orders (
   PRIMARY KEY (gharpay_id)
 );
 
-CREATE TABLE gharpay_property (
+CREATE TABLE IF NOT EXISTS gharpay_property (
    property_id INT AUTO_INCREMENT NOT NULL,
    property_name VARCHAR(80) NOT NULL,
    PRIMARY KEY (property_id)
 );
 
-CREATE TABLE gharpay_prop_value (
+CREATE TABLE IF NOT EXISTS gharpay_prop_value (
    prop_value_id INT AUTO_INCREMENT NOT NULL,
    property_id INT NOT NULL,
    gharpay_id INT NOT NULL,
