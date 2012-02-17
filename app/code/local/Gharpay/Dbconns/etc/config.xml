@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<config>
+      <modules>
+        <Gharpay_Dbconns>
+          <version>0.1.0</version>
+        </Gharpay_Dbconns>
+      </modules>
+	  
+   <global>
+
+   
+   
+      <helpers>
+       <dbconns>
+           <class>Gharpay_Dbconns_Helper</class>
+       </dbconns>
+      </helpers>   
+
+	  
+	         <models>
+            <dbconns>
+                <class>Gharpay_Dbconns_Model</class>
+                <resourceModel>dbconns_mysql4</resourceModel>
+            </dbconns>
+            <dbconns_mysql4>
+                <class>Gharpay_Dbconns_Model_Mysql4</class>
+                <entities>
+                    <gharpayorders>
+                        <table>gharpay_orders</table>
+                    </gharpayorders>
+                </entities>
+            </dbconns_mysql4>
+        </models>
+        <resources>
+            <dbconns_setup>
+                <setup>
+                    <module>Gharpay_Dbconns</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </dbconns_setup>
+            <dbconns_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </dbconns_write>
+            <dbconns_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </dbconns_read>
+			
+        </resources>
+	 
+   </global> 
+   
+
+</config> 
