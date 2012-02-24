@@ -4,6 +4,7 @@ require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEP
 require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Xml2Array.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpaypropvalue.php');
+require_once(Mage::getModuleDir('Model', 'Gharpay_Pushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
 
 class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method_Abstract
 {
@@ -80,11 +81,11 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                  ); 
                 $i++;
             }
-            #$date->format('d-m-Y'),
+            #,
             $orderDetails = array(
             "pincode"=>$order->getBillingAddress()->getPostcode(),
             "clientOrderID"=>$order->getIncrementId(),
-            "deliveryDate"=>'24-02-2012',
+            "deliveryDate"=>$date->format('d-m-Y'),
             "orderAmount"=>$order->getBaseGrandTotal(),
             "productDetails"=>$productDetails
             );
@@ -128,6 +129,10 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                         $gharpaypropvalue->setPropertyId(1);
                         $gharpaypropvalue->setValue('Pending');
                         $gharpaypropvalue->save();
+                        $gp = new Gharpay_Pushnotification_Model_Pnotif();
+                        $status = 'Pending';
+                        $coid=$order->getIncrementId();
+                        $gp->addStatusToOrderGrid($coid,$status);
                         $payment->setTransactionId($gharpayId);
                     }
             }
