@@ -28,6 +28,12 @@
                     <gharpayorders>
                         <table>gharpay_orders</table>
                     </gharpayorders>
+                    <gharpayproperty>
+                        <table>gharpay_property</table>
+                    </gharpayproperty>
+                    <gharpaypropvalue>
+                        <table>gharpay_prop_value</table>
+                    </gharpaypropvalue>
                 </entities>
             </dbconns_mysql4>
         </models>

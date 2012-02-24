@@ -46,15 +46,27 @@
               </connection>
             </cashondelivery_read>
         </resources>
+        <events>
+            <order_cancel_after>
+                <observers>
+                    <gharpay_cashondelivery>
+                        <type>singleton</type>
+                        <class>cashondelivery/observer</class>
+                        <method>gharpayCancelOrder</method>
+                    </gharpay_cashondelivery>    
+                </observers>
+            </order_cancel_after>
+        </events>
     </global>
 <!-- declare default configuration values for this module -->
+
     <default>
         <payment>
             <cashondelivery>
                 <active>1</active>
                 <model>cashondelivery/createorder</model>
                 <order_status>pending</order_status>
-                <payment_action>authorize_capture</payment_action>
+                <payment_action>authorize</payment_action>
                 <title>Gharpay</title>
                 <gharpay_uri>services.gharpay.in</gharpay_uri>
             </cashondelivery>

@@ -3,14 +3,23 @@ include_once 'app/Mage.php';
 require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Array2Xml.php');
 require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Xml2Array.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
+require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpaypropvalue.php');
 
 class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method_Abstract
 {
     protected $_code = 'cashondelivery';
-    protected $_canCapture = true;
+    protected $_canAuthorize = true;
     protected $_canUseCheckout = true;
     protected $_canFetchTransactionInfo     = true;
     protected $_isGateway                   = true;
+    protected $_canUseInternal = true;
+    protected $_canVoid    = true;
+    protected $_canCancel = true;
+    
+    public function canCancel()
+    {
+        return $this->_canCancel;
+    }
     
     public function validate()
     {
@@ -42,10 +51,10 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
         $response = $client->request();
         $xml = $response->getRawBody();
         $parr=  XML2Array::createArray($xml);
-        $res=$parr['isPincodePresentPresentResponse']['result'];
+        $res=$parr['isPincodePresentPresentResponse']['result'];       
         Return $r = $res=='false'? FALSE : TRUE;        
     }
-    public function capture(Varien_Object $payment, $amount)
+    public function authorize(Varien_Object $payment, $amount)
     {
         $uri = Mage::getStoreConfig('payment/cashondelivery/gharpay_uri',Mage::app()->getStore());
         $username = Mage::getStoreConfig('payment/cashondelivery/username',Mage::app()->getStore());
@@ -71,10 +80,11 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                  ); 
                 $i++;
             }
+            #$date->format('d-m-Y'),
             $orderDetails = array(
             "pincode"=>$order->getBillingAddress()->getPostcode(),
             "clientOrderID"=>$order->getIncrementId(),
-            "deliveryDate"=>$date->format('d-m-Y'),
+            "deliveryDate"=>'24-02-2012',
             "orderAmount"=>$order->getBaseGrandTotal(),
             "productDetails"=>$productDetails
             );
@@ -111,6 +121,14 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                         $gharpayorders->setCreatedAt($date->format('Y-m-d H:i:s'));
                         $gharpayorders->setUpdatedAt($date->format('Y-m-d H:i:s'));
                         $gharpayorders->save();
+                        $goid = $gharpayorders->getId();
+                        Mage::Log($goid);
+                        $gharpaypropvalue= new Gharpay_Dbconns_Model_Gharpaypropvalue();
+                        $gharpaypropvalue->setGharpayId($goid);
+                        $gharpaypropvalue->setPropertyId(1);
+                        $gharpaypropvalue->setValue('Pending');
+                        $gharpaypropvalue->save();
+                        $payment->setTransactionId($gharpayId);
                     }
             }
             else
@@ -118,6 +136,36 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                      Mage::throwException($this->_getHelper()->__('Oops! Some error occured in the Payment Gateway, Please try after some time or Contact Us'));                     
             }
             return $this;
-    }     
+    }
+    
+    public function void(Varien_Object $payment)
+    {
+        Mage::app();
+        Mage::Log('this is inside Void up');
+        if (!$this->canVoid($payment)) {
+            Mage::throwException($this->_getHelper()->__('Void action is not available.'));
+        }
+        $username = Mage::getStoreConfig('payment/cashondelivery/username',Mage::app()->getStore());
+        $password = Mage::getStoreConfig('payment/cashondelivery/password',Mage::app()->getStore());
+        $arr['orderID']=$payment->getTransactionId();
+        $xml=Array2XML::createXML('cancelOrder',$arr);
+        Mage::Log('this is inside void :'.$xml);
+            $client = new Varien_Http_Client('http://'.$uri.'/rest/GharpayService/cancelOrder');
+            $client->setHeaders('username',$username);
+            $client->setHeaders('password',$password);
+            $client->setMethod(Varien_Http_Client::POST);
+            $client->setRawData($xml, 'application/xml');
+            $response = $client->request();
+            Mage::Log('Log Response :'.$response);
+            $resXML=$response->getRawBody();
+            Mage::Log('This is response :' .$resXML);
+        return $this;
+        
+    }
+    
+    public function cancel(Varien_Object $payment)
+    {   Mage::Log('Inside Cancel');
+        return $this;
+        Mage::Log('Going out of cancel');
+    }
 }
-?>
