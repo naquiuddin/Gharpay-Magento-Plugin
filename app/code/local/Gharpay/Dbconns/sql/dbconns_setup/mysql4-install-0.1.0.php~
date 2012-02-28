@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS gharpay_prop_value (
   CONSTRAINT fkpropertyid FOREIGN KEY (property_id) REFERENCES gharpay_properties (property_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   PRIMARY KEY (prop_value_id)
 );
-insert into gharpay_property (property_name) values ('Gharpay Order Status');
+
 ");
 //demo 
 Mage::getModel('core/url_rewrite')->setId(null);

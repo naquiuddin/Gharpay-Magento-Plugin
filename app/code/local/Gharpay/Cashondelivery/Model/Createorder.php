@@ -51,8 +51,17 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
         $client->setEncType('application/xml');
         $response = $client->request();
         $xml = $response->getRawBody();
+        Mage::Log($response);
         $parr=  XML2Array::createArray($xml);
-        $res=$parr['isPincodePresentPresentResponse']['result'];       
+        $res='';
+        if(isset($parr['isPincodePresentPresentResponse']['result'])) {
+               $res = $parr['isPincodePresentPresentResponse']['result'];
+        }
+        else
+        {
+            Mage::throwException($this->_getHelper()->__('something is wrong. Please Contact us'));
+        }
+
         Return $r = $res=='false'? FALSE : TRUE;        
     }
     public function authorize(Varien_Object $payment, $amount)
@@ -127,7 +136,7 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                         $gharpaypropvalue= new Gharpay_Dbconns_Model_Gharpaypropvalue();
                         $gharpaypropvalue->setGharpayId($goid);
                         $gharpaypropvalue->setPropertyId(1);
-                        $gharpaypropvalue->setValue('Pending');
+                        $gharpaypropvalue->setPropValue('Pending');
                         $gharpaypropvalue->save();
                         $gp = new Gharpay_Pushnotification_Model_Pnotif();
                         $status = 'Pending';

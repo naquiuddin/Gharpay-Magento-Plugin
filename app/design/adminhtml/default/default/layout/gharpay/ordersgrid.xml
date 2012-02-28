@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<layout>
+    <!-- main layout definition that adds the column -->
+    <add_order_grid_column_handle>
+        <reference name="sales_order.grid">
+            <action method="addColumnAfter">
+                <columnId>gharpay_status</columnId>
+                <arguments module="customer" translate="header">
+                    <header>Gharpay Status</header>
+                    <index>gharpay_status</index>
+                    <type>options</type>
+                    <!--<filter>pushnotification/adminhtml_sales_order_filter_gharpayStatus</filter>-->
+                    <renderer>pushnotification/adminhtml_sales_order_renderer_gharpayStatus</renderer>
+                </arguments>
+                <after>status</after>
+            </action>
+        </reference>
+    </add_order_grid_column_handle>
+    <!-- order grid action -->
+    <adminhtml_sales_order_grid>
+        <!-- apply the layout handle defined above -->
+        <update handle="add_order_grid_column_handle" />
+    </adminhtml_sales_order_grid> 
+    <!-- order grid view action -->
+    <adminhtml_sales_order_index>
+        <!-- apply the layout handle defined above -->
+        <update handle="add_order_grid_column_handle" />
+    </adminhtml_sales_order_index>
+</layout>

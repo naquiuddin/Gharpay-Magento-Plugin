@@ -20,12 +20,12 @@ $this->getConnection()->addKey(
     'gharpay_status'//fields
 );
 // Now you need to fullfill existing rows with data from address table
-$this->run("update sales_flat_order_grid sfog 
-    join gharpay_orders go on sfog.increment_id=go.client_order_id 
-    join gharpay_prop_value gpv on go.gharpay_id=gpv.gharpay_id 
-    join gharpay_property gp on gp.property_id=gpv.property_id
-set sfog.gharpay_status=gpv.prop_value 
-where sfog.increment_id=go.client_order_id and gp.property_id=1;");
+//$this->run("update sales_flat_order_grid sfog 
+//    join gharpay_orders go on sfog.increment_id=go.client_order_id 
+//    join gharpay_prop_value gpv on go.gharpay_id=gpv.gharpay_id 
+//    join gharpay_property gp on gp.property_id=gpv.property_id
+//set sfog.gharpay_status=gpv.prop_value 
+//where sfog.increment_id=go.client_order_id and gp.property_id=1;");
 //$select = $this->getConnection()->select();
 //$select->join(
 //    array('order_payment'=>$this->getTable('sales/order_payment')),//alias=>table_name
