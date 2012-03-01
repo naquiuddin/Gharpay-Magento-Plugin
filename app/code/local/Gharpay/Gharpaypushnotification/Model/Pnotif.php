@@ -7,7 +7,7 @@ require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpaypropvalue.php');
 
 define('GHARPAY_STATUS','Gharpay Order Status');
-class Gharpay_Pushnotification_Model_Pnotif extends Mage_Core_Model_Abstract
+class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstract
 {
     
     public function viewOrderStatus($gharpayOrderId)
@@ -48,21 +48,24 @@ class Gharpay_Pushnotification_Model_Pnotif extends Mage_Core_Model_Abstract
         $gp->addFieldToFilter('property_name',GHARPAY_STATUS);
         $pid=$gp->getFirstItem()->getData('property_id');
         Mage::Log($pid);
-        $gpv = $gpv->getCollection();
+        $gpv=$gpv->getCollection();
         $gpv->addFieldToFilter('gharpay_id',$gpid);
         $gpv->addFieldToFilter('property_id',$pid)->getSelect();
         Mage::Log($gpv->count());
         if($gpv->count())
         {
-            foreach($gpv as $item)
-            {
-                $item->setPropValue($status)->save();
-                $this->addStatusToOrderGrid($cid,$status);
-            }
+            $gpvn= new Gharpay_Dbconns_Model_Gharpaypropvalue();
+            $gpvn->setPropertyId($pid);
+            $gpvn->setGharpayId($gpid);
+            $gpvn->setPropValue($status);
+            $gpvn->save();
+            $this->addStatusToOrderGrid($cid, $status);
         }
         else
         {
-            Mage::throwException($this->_getHelper()->__('Oops! Something went wrong.Please contact us'));
+            Mage::app();
+            Mage::log($gpv->count());
+            Mage::throwException('Oops! Something went wrong.Please contact us');
         } 
    }
     

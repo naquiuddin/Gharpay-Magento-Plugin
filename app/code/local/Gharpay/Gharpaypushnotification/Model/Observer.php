@@ -2,7 +2,7 @@
 /**
  * Event observer model
  */
-class Gharpay_Pushnotification_Model_Observer
+class Gharpay_Gharpaypushnotification_Model_Observer
 {
     /**
      * Adds virtual grid column to order grid records generation

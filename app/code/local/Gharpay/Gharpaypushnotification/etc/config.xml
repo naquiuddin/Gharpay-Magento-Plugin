@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<config>
+      <modules>
+        <Gharpay_Gharpaypushnotification>
+          <version>0.1.0</version>
+        </Gharpay_Gharpaypushnotification>
+      </modules>
+	  <frontend>
+      <routers>
+        <gharpaypushnotification>
+          <use>standard</use>
+         <args>
+           <module>Gharpay_Gharpaypushnotification</module>
+           <frontName>gharpaypushnotification</frontName>
+         </args>
+        </gharpaypushnotification>
+      </routers>
+	  <layout>
+          <updates>
+              <gharpaypushnotification>
+                  <file>gharpaypushnotification.xml</file>
+              </gharpaypushnotification>
+          </updates>
+      </layout>
+    </frontend>
+   <global>
+
+   
+   
+      <helpers>
+       <gharpaypushnotification>
+           <class>Gharpay_Gharpaypushnotification_Helper</class>
+       </gharpaypushnotification>
+      </helpers>
+      <models>
+           <gharpaypushnotification>
+               <class>Gharpay_Gharpaypushnotification_Model</class>
+           </gharpaypushnotification>
+       </models>
+
+	  <blocks><gharpaypushnotification><class>Gharpay_Gharpaypushnotification_Block</class></gharpaypushnotification></blocks>
+	       <resources>
+            <gharpaypushnotification_setup>
+                <setup>
+                    <module>Gharpay_Gharpaypushnotification</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </gharpaypushnotification_setup>
+            <gharpaypushnotification_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </gharpaypushnotification_write>
+            <gharpaypushnotification_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </gharpaypushnotification_read>
+			
+        </resources>
+	 
+   </global> 
+   <adminhtml>
+        <layout>
+             <!-- layout upgrade configuration -->
+            <updates>
+                <gharpay_ordersgrid>
+                    <file>gharpay/ordersgrid.xml</file>
+                </gharpay_ordersgrid>
+            </updates>
+        </layout>
+    </adminhtml>
+</config> 

@@ -1,6 +1,6 @@
 <?php
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
-require_once(Mage::getModuleDir('Model', 'Gharpay_Pushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
+require_once(Mage::getModuleDir('Model', 'Gharpay_Gharpaypushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
 class Gharpay_Cashondelivery_Model_Observer
 {
     public function gharpayCancelOrder(Varien_Event_Observer $Observer)
@@ -39,7 +39,7 @@ class Gharpay_Cashondelivery_Model_Observer
                 $result=$arr['cancelOrderResponse']['result'];
                 if($result=='true')
                 {
-                    $gp = new Gharpay_Pushnotification_Model_Pnotif();                    
+                    $gp = new Gharpay_Gharpaypushnotification_Model_Pnotif();
                     $status='Cancelled by Client';
                     $gp->addStatusToGharpayDb($transId,$status);
                     $gp->addStatusToOrderGrid($coid,$status);

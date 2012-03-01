@@ -4,7 +4,7 @@ require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEP
 require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Xml2Array.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpaypropvalue.php');
-require_once(Mage::getModuleDir('Model', 'Gharpay_Pushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
+require_once(Mage::getModuleDir('Model', 'Gharpay_Gharpaypushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
 
 class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method_Abstract
 {
@@ -128,8 +128,7 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                         $gharpayorders= new Gharpay_Dbconns_Model_Gharpayorders();
                         $gharpayorders->setGharpayOrderId($gharpayId);
                         $gharpayorders->setClientOrderId($clientId);
-                        $gharpayorders->setCreatedAt($date->format('Y-m-d H:i:s'));
-                        $gharpayorders->setUpdatedAt($date->format('Y-m-d H:i:s'));
+                        $gharpayorders->setCreatedAt($date->format('Y-m-d h:i:s'));
                         $gharpayorders->save();
                         $goid = $gharpayorders->getId();
                         Mage::Log($goid);
@@ -137,8 +136,9 @@ class Gharpay_Cashondelivery_Model_Createorder extends Mage_Payment_Model_Method
                         $gharpaypropvalue->setGharpayId($goid);
                         $gharpaypropvalue->setPropertyId(1);
                         $gharpaypropvalue->setPropValue('Pending');
+                        $gharpaypropvalue->setCreatedAt($date->format('Y-m-d h:i:s'));
                         $gharpaypropvalue->save();
-                        $gp = new Gharpay_Pushnotification_Model_Pnotif();
+                        $gp = new Gharpay_Gharpaypushnotification_Model_Pnotif();
                         $status = 'Pending';
                         $coid=$order->getIncrementId();
                         $gp->addStatusToOrderGrid($coid,$status);

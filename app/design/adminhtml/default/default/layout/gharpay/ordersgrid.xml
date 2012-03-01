@@ -9,8 +9,8 @@
                     <header>Gharpay Status</header>
                     <index>gharpay_status</index>
                     <type>options</type>
-                    <!--<filter>pushnotification/adminhtml_sales_order_filter_gharpayStatus</filter>-->
-                    <renderer>pushnotification/adminhtml_sales_order_renderer_gharpayStatus</renderer>
+                    <!--<filter>gharpaypushnotification/adminhtml_sales_order_filter_gharpayStatus</filter>-->
+                    <renderer>gharpaypushnotification/adminhtml_sales_order_renderer_gharpayStatus</renderer>
                 </arguments>
                 <after>status</after>
             </action>
