@@ -18,9 +18,9 @@ class Gharpay_Gpcashpayment_Model_Observer
 			#{
 			Mage::app();
 			Mage::Log('this is inside If block');
-			$uri = Mage::getStoreConfig('payment/cashondelivery/gharpay_uri',Mage::app()->getStore());
-			$username = Mage::getStoreConfig('payment/cashondelivery/username',Mage::app()->getStore());
-			$password = Mage::getStoreConfig('payment/cashondelivery/password',Mage::app()->getStore());
+			$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
+			$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
+			$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
 			$arr['orderID']=$transId;
 			$xml=Array2XML::createXML('cancelOrder',$arr);
 			$xml=$xml->saveXML();
