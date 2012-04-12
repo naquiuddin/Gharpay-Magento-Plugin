@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <config>
 <modules>
-   <Gharpay_Pushnotification>
+   <Gharpay_Gpcashpayment>
       <active>true</active>
       <codePool>local</codePool>
       <version>0.1.0</version>
-   </Gharpay_Pushnotification>
+   </Gharpay_Gpcashpayment>
 </modules>
 </config>

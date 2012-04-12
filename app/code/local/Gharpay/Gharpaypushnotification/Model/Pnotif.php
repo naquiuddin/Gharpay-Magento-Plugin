@@ -12,9 +12,9 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
     
     public function viewOrderStatus($gharpayOrderId)
     {
-        $uri = Mage::getStoreConfig('payment/cashondelivery/gharpay_uri',Mage::app()->getStore());
-        $username = Mage::getStoreConfig('payment/cashondelivery/username',Mage::app()->getStore());
-        $password = Mage::getStoreConfig('payment/cashondelivery/password',Mage::app()->getStore());
+        $uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
+        $username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
+        $password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
         Mage::app(); //for autoloading:)
         $client = new Varien_Http_Client('http://'.$uri.'/rest/GharpayService/viewOrderStatus?orderID='.$gharpayOrderId);
         $client->setMethod(Varien_Http_Client::GET);
