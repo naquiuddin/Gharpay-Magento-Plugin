@@ -1,4 +1,5 @@
 <?php
+require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'GharpayAPI.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Gharpaypushnotification').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Pnotif.php');
 class Gharpay_Gpcashpayment_Model_Observer
@@ -14,37 +15,29 @@ class Gharpay_Gpcashpayment_Model_Observer
 		{
 			$transId = $go->getFirstItem()->getData('gharpay_order_id');
 			Mage::Log($transId);
-			#if(!empty($transId)&&isset($transId)&&$tBits[0]=='GW')
-			#{
 			Mage::app();
 			Mage::Log('this is inside If block');
 			$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
 			$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
 			$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
-			$arr['orderID']=$transId;
-			$xml=Array2XML::createXML('cancelOrder',$arr);
-			$xml=$xml->saveXML();
-			Mage::Log('this is inside XML :'.$xml);
-			$client = new Varien_Http_Client('http://'.$uri.'/rest/GharpayService/cancelOrder');
-			$client->setHeaders('username',$username);
-			$client->setHeaders('password',$password);
-			$client->setMethod(Varien_Http_Client::POST);
-			$client->setRawData($xml, 'application/xml');
-			$response = $client->request();
-			Mage::Log('Log Response :'.$response);
-			$resXML=$response->getRawBody();
-			Mage::Log('This is response Body :' .$resXML);
-			$arr =  XML2Array::createArray($resXML);
-			Mage::Log($arr['cancelOrderResponse']['result']);
-			$result=$arr['cancelOrderResponse']['result'];
-			if($result=='true')
-			{
-				$gp = new Gharpay_Gharpaypushnotification_Model_Pnotif();
-				$status='Cancelled by Client';
-				$gp->addStatusToGharpayDb($transId,$status);
-				$gp->addStatusToOrderGrid($coid,$status);
+			$gpAPI = new GharpayAPI();
+			$gpAPI->setUsername($username);
+			$gpAPI->setPassword($password);
+			$gpAPI->setURL($uri);
+			$result=array();
+			try {
+				$result = $gpAPI->cancelOrder($transId);
+				if($result['result']=='true')
+				{
+					$gp = new Gharpay_Gharpaypushnotification_Model_Pnotif();
+					$status='Cancelled by Client';
+					$gp->addStatusToGharpayDb($transId,$status);
+					$gp->addStatusToOrderGrid($coid,$status);
+				}
 			}
-			#}
+			catch (Exception $e){
+				Mage::throwException(Mage::helper('adminhtml')->__($e->getMessage()));
 			}
 		}
+	}
 }

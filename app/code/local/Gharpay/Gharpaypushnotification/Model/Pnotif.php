@@ -1,7 +1,6 @@
 <?php
 include_once 'app/Mage.php';
-require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Array2Xml.php');
-require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'Xml2Array.php');
+require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'GharpayAPI.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayproperty.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpaypropvalue.php');
@@ -13,24 +12,25 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
     public function viewOrderStatus($gharpayOrderId)
     {
         $uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
-        $username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
-        $password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
-        Mage::app(); //for autoloading:)
-        $client = new Varien_Http_Client('http://'.$uri.'/rest/GharpayService/viewOrderStatus?orderID='.$gharpayOrderId);
-        $client->setMethod(Varien_Http_Client::GET);
-        $client->setHeaders('username',$username);
-        $client->setHeaders('password',$password);
-        $client->setEncType('application/xml');
-        $response = $client->request();
-        $xml = $response->getRawBody();
-        Mage::Log($xml);
-        $arr=  XML2Array::createArray($xml);
-        $orderStatus=$arr['viewOrderStatusResponse']['orderStatus'];
-        $gorderId=$arr['viewOrderStatusResponse']['orderID'];
-        Mage::Log($orderStatus.$gorderId);
-        $this->addStatusToGharpayDb($gorderId,$orderStatus);
+		$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
+		$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
+		$gpAPI = new GharpayAPI();
+		$gpAPI->setUsername($username);
+		$gpAPI->setPassword($password);
+		$gpAPI->setURL($uri);
+        
+        Mage::app(); //for autoloading
+        try {
+        $result = $gpAPI->viewOrderStatus($gharpayOrderId);
+        }
+        catch (Exception $e)
+        {
+        	Mage::throwException($this->_getHelper()->__($e->getMessage()));
+        }
+  
+        $this->addStatusToGharpayDb($result['gharpayOrderId'],$result['status']);
+        
         Mage::Log('Called addStatusToGharpayDb() just now');
-        //return $status;
     }
     public function addStatusToGharpayDb($gharpayOrderId,$status)
     {
@@ -76,10 +76,5 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
         Mage::Log($increment_id.'  '.$status);
         Mage::Log($qry);
         $result=$og->query($qry);
-//        $sfog = Mage::getModel('sales/order')->loadByIncrementId($increment_id);
-//        Mage::Log($sfog->getData('gharpay_status'));
-//        $sfog->setGharpayStatus($status);
-//        $sfog->save();
-//              
     }
 }
