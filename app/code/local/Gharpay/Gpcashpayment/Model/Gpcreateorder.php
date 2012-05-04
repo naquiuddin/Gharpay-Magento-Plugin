@@ -22,7 +22,8 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 	}
 
 	public function validate()
-	{
+	{	
+		Mage::Log("Validate Function of Payment Method called");
 		$title = Mage::getStoreConfig('payment/gpcashpayment/title',Mage::app()->getStore());
 		$paymentInfo = $this->getInfoInstance();
 		if ($paymentInfo instanceof Mage_Sales_Model_Order_Payment) {
@@ -39,6 +40,7 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 
 	public function canUseForPostCode($postCode)
 	{
+		Mage::Log("canUseForPostCode of payment method called");
 		$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
 		$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
 		$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
@@ -57,6 +59,7 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 	}
 	public function authorize(Varien_Object $payment, $amount)
 	{
+		Mage::Log("authorize function is called");
 		$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
 		$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
 		$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
@@ -89,7 +92,6 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 			);			
 			$i++;
 		}
-		Mage::Log($productDetails);
 
 		$orderDetails = array(
 				"pincode"=>$order->getBillingAddress()->getPostcode(),

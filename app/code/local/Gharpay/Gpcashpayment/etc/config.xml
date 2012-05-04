@@ -19,7 +19,7 @@
       </helpers> 
       
       <events>
-            <order_cancel_after>
+            <order_cancel_before>
                 <observers>
                     <gharpay_gpcashpayment>
                         <type>singleton</type>
@@ -27,7 +27,7 @@
                         <method>gharpayCancelOrder</method>
                     </gharpay_gpcashpayment>    
                 </observers>
-            </order_cancel_after>
+            </order_cancel_before>
        </events>
           	  
    </global> 

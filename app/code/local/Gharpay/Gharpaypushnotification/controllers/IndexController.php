@@ -6,8 +6,7 @@ class Gharpay_Gharpaypushnotification_IndexController extends Mage_Core_Controll
         if($this->getRequest()->getParams())
         {
 	        $params=$this->getRequest()->getParams();
-	        $gharpayOrderId=$params['order_id'];
-	        $time=$params['time'];
+	        $gharpayOrderId=$params['order_id'];	      
 	        $model = Mage::getModel('gharpaypushnotification/pnotif');
 	        $model->viewOrderStatus($gharpayOrderId);
         }

@@ -12,6 +12,7 @@ class Gharpay_Gharpaypushnotification_Model_Observer
      */
     public function addColumnToResource(Varien_Event_Observer $observer)
     {
+    	Mage::Log("Called addColumnToResource in Push notification observer");
         $resource = $observer->getEvent()->getResource();
 //        $resource->addVirtualGridColumn(
 //            'gharpay_status',

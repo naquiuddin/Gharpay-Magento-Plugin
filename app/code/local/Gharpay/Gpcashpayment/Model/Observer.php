@@ -6,6 +6,8 @@ class Gharpay_Gpcashpayment_Model_Observer
 {
 	public function gharpayCancelOrder(Varien_Event_Observer $Observer)
 	{
+		Mage::Log("Inside gharpay cancel observer");
+		$order = $Observer->getOrder();
 		$coid=$Observer->getOrder()->getIncrementId();
 		Mage::Log($coid);
 		$go=new Gharpay_Dbconns_Model_Gharpayorders();
@@ -13,10 +15,10 @@ class Gharpay_Gpcashpayment_Model_Observer
 		$go->addFieldToFilter('client_order_id',$coid)->getSelect();
 		if($go->count())
 		{
+			Mage::Log("inside if loop gharpay cancel observer");
 			$transId = $go->getFirstItem()->getData('gharpay_order_id');
 			Mage::Log($transId);
 			Mage::app();
-			Mage::Log('this is inside If block');
 			$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
 			$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
 			$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
@@ -36,7 +38,8 @@ class Gharpay_Gpcashpayment_Model_Observer
 				}
 			}
 			catch (Exception $e){
-				Mage::throwException(Mage::helper('adminhtml')->__($e->getMessage()));
+				Mage::Log("inside catch block of cancel Observer");
+				Mage::throwException(Mage::helper('adminhtml')->__($e->getCode().":  ".$e->getMessage()));
 			}
 		}
 	}

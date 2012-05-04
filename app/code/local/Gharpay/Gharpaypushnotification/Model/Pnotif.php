@@ -11,6 +11,7 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
     
     public function viewOrderStatus($gharpayOrderId)
     {
+    	Mage::Log("called viewOrderStatus of push notification");
         $uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
 		$username = Mage::getStoreConfig('payment/gpcashpayment/username',Mage::app()->getStore());
 		$password = Mage::getStoreConfig('payment/gpcashpayment/password',Mage::app()->getStore());
@@ -26,24 +27,19 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
         catch (Exception $e)
         {
         	Mage::throwException($this->_getHelper()->__($e->getMessage()));
-        }
-  
+        } 
         $this->addStatusToGharpayDb($result['gharpayOrderId'],$result['status']);
-        
-        Mage::Log('Called addStatusToGharpayDb() just now');
     }
     public function addStatusToGharpayDb($gharpayOrderId,$status)
     {
+    	Mage::Log("called addStatusToGharpayDb method");
         $go =  new Gharpay_Dbconns_Model_Gharpayorders();
         $gp =  new Gharpay_Dbconns_Model_Gharpayproperty();
-        $gpv =  new Gharpay_Dbconns_Model_Gharpaypropvalue();
-        
+        $gpv =  new Gharpay_Dbconns_Model_Gharpaypropvalue();        
         $go= $go->getCollection();
         $go=$go->addFieldToFilter('gharpay_order_id',$gharpayOrderId);
         $gpid = $go->getFirstItem()->getData('gharpay_id');
         $cid=$go->getFirstItem()->getData('client_order_id');
-        Mage::Log($gpid);
-
         $gp = $gp->getCollection();
         $gp->addFieldToFilter('property_name',GHARPAY_STATUS);
         $pid=$gp->getFirstItem()->getData('property_id');
@@ -64,16 +60,16 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
         else
         {
             Mage::app();
-            Mage::log($gpv->count());
             Mage::throwException('Oops! Something went wrong.Please contact us');
         } 
    }
     
     public function addStatusToOrderGrid($increment_id,$status)
     {
+    	Mage::Log("Called addStatusToOrderGrid method");
         $og=Mage::getSingleton('core/resource')->getConnection('core_write');
         $qry="update sales_flat_order_grid set gharpay_status='".$status."' where increment_id=".$increment_id;
-        Mage::Log($increment_id.'  '.$status);
+        Mage::Log("Order ID :".$increment_id."Status : ".$status);
         Mage::Log($qry);
         $result=$og->query($qry);
     }
