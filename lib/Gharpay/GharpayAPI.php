@@ -181,7 +181,7 @@ class GharpayAPI
 	        }
 	    } 	
         else 
-        	throw new InvalidArgumentException('Invalid arguments passed');
+        	throw new InvalidArgumentException('Invalid arguments passed in createOrder');
     }
     /**
      * 
@@ -339,7 +339,7 @@ class GharpayAPI
 	    	else
 	    		throw new GharpayAPIException('Error occurred while invoking the API',0);
     	}
-    	else throw new InvalidArgumentException('Arguments are either invalid or null');
+    	else throw new InvalidArgumentException('Arguments are either invalid or null in cancelProductsFromOrder');
    }
     /**
      * 
@@ -414,7 +414,7 @@ class GharpayAPI
 	    	else
 	    			throw new GharpayAPIException('Error occurred while invoking the API',0);
     	}
-    	else throw new InvalidArgumentException('argument is either null or empty');
+    	else throw new InvalidArgumentException('Pincode is either null or empty');
     }
     /**
      * 
@@ -457,7 +457,7 @@ class GharpayAPI
 	    	else
 	    		throw new GharpayAPIException('Error occurred while invoking the API',0);
     	}
-    	else  throw new InvalidArgumentException('argument is either null or empty');
+    	else  throw new InvalidArgumentException('city name is either null or empty');
     }
     /**
      * 
@@ -482,7 +482,7 @@ class GharpayAPI
 	    	else
 	    		throw new GharpayAPIException('Error occurred while invoking the API',0);
 		}
-		else throw new InvalidArgumentException('argument is either null or empty');
+		else throw new InvalidArgumentException('City Name is either null or empty');
     }
     /**
      * 
