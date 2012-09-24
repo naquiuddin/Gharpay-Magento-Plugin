@@ -6,14 +6,13 @@
  *
  * @author khaja Naquiuddin khaja@gharpay.in
  */
-require_once 'config.php';
-if(ERROR_ON)
-{
-	ini_set('display_errors', 1);
-	ini_set('log_errors', 1);
-	ini_set('error_log', dirname('error') . '/error_log.txt');
-	error_reporting(E_ALL);
-}
+ 
+// Mike Prince, 27 June 2012.
+// Enhance pincode validation.
+
+// Mike Prince, 27 June 2012.
+// Improved error messages for customer-facing errors.
+
 require_once 'Array2Xml.php';
 require_once 'Xml2Array.php';
 class GharpayAPIException extends Exception
@@ -25,12 +24,6 @@ class GharpayAPI
     private $_username;
     private $_password;
     private $_url;
-    function __construct()
-    {
-    	$this->_username = USERNAME;
-    	$this->_password= PASSWORD;
-    	$this->_url= URL; 	
-    }
     public function getUsername()
     {
         return $this->_username;
@@ -92,7 +85,7 @@ class GharpayAPI
         }
         else
         {
-        	throw new GharpayAPIException('There is a connection error, please check your internet connectivity');        	
+        	throw new GharpayAPIException('There is a problem with the Internet connection, please check and retry');        	
         }
     }
     
@@ -393,14 +386,48 @@ class GharpayAPI
      * @throws GharpayAPIException
      * @return boolean
      */
+
+	 /**
+	 * Validates a pincode as being either 6 characters, or 7 with a space in the middle.
+	 * NB: Ideally hould be stricter than this, i.e. digits only with first digit being from 1-9 (not 0).
+     * 
+     * @param int $pincode
+     * @return boolean
+     */
+    public function isPincodeValid($pincode)
+    {
+    	$pincode=trim($pincode);
+		$pinCodeLength = strlen((string)$pincode);
+		if ((($pinCodeLength<>6) && ($pinCodeLength<>7)) || (($pinCodeLength==7) && !((string)$pincode[3]==' ')))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	 /**
+     * Normalises a pincode that may be 7 digits with a space in between to being 6 digits by removing the space.
+	 * NB: Assumes pincode has passed isPincodeValid.
+     * @param int $pincode
+     * @return $pincode
+     */
+    public function normalisePincode($pincode)
+    {
+		return (strlen((string)$pincode)==6) ? $pincode : substr($pincode,0,3) . substr($pincode,4,3);
+	}
+	
     public function isPincodePresent($pincode)
     {
     	$pincode=trim($pincode);
     	if(!empty($pincode))
     	{
-	    	if(strlen((string)$pincode)<>6)
-	    		throw new InvalidArgumentException("Oops! Pincode is missing or Invalid");
-	    	
+
+			if (!$this->isPincodeValid($pincode))
+			{
+				throw new InvalidArgumentException('The pincode entered is invalid. Please ensure it has 6 digits and then confirm your order again.');
+			}
+			$pincode = $this->normalisePincode($pincode);
+
 	    	$response = $this->callGharpayAPI('isPincodePresent?pincode='.$pincode);
 	    	if(!isset($response['isPincodePresentPresentResponse']['errorCode']))
 	        {	

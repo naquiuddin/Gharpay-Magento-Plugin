@@ -1,0 +1,14 @@
+<?php
+ 
+// Mike Prince, 27 June 2012
+// Add description and logo for Gharpay.
+// NB: Ideally description should be stored in configuration but hard-coded for time-being.
+
+?>
+<?php $_code=$this->getMethodCode() ?>
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none;">
+	<li>
+		<?php echo $this->__("Gharpay's blazingly fast executives will call you in less than 24 hours, confirm an appointment and collect the payment for the product(s) that you just ordered. Once the payment is collected, your order is confirmed and your product(s) will be shipped according to the guidelines on this website.")?>
+		<img src="<?php echo $this->getSkinUrl('images/gharpay.jpg') ?>" alt="<?php echo $this->__('gharpay') ?>" class="payment-logos-sm" />
+	</li>
+</ul>

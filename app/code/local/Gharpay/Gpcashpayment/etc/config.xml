@@ -17,6 +17,9 @@
            <class>Gharpay_Gpcashpayment_Helper</class>
        </gpcashpayment>
       </helpers> 
+        <blocks>
+            <gpcashpayment><class>Gharpay_Gpcashpayment_Block</class></gpcashpayment>
+        </blocks>
       
       <events>
             <order_cancel_before>

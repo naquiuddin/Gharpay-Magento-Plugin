@@ -1,4 +1,18 @@
 <?php
+/*
+
+// Mike Prince, 27 June 2012
+// New isAvailable function restricts Gharpay to Indian billing addresses only.
+// NB: Ideally countries should be defined in configuration rather than hard-coded, and should be further restricted on pincode.
+
+// Mike Prince, 27 June 2012
+// Define form block for checkout page.
+
+// Mike Prince, 29 June 2012
+// Change error message for Gharpay not available in area.
+
+*/
+
 include_once 'app/Mage.php';
 require_once(Mage::getBaseDir('lib').DIRECTORY_SEPARATOR.'Gharpay'.DIRECTORY_SEPARATOR.'GharpayAPI.php');
 require_once(Mage::getModuleDir('Model', 'Gharpay_Dbconns').DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Gharpayorders.php');
@@ -15,6 +29,9 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 	protected $_canUseInternal = true;
 	protected $_canVoid    = true;
 	protected $_canCancel = true;
+
+    protected $_formBlockType = 'gpcashpayment/form';
+    //protected $_infoBlockType = 'gpcashpayment/info';
 
 	public function canCancel()
 	{
@@ -33,7 +50,10 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 			$postCode = $paymentInfo->getQuote()->getBillingAddress()->getPostcode();
 		}
 		if (!$this->canUseForPostCode($postCode)) {
+/*
 			Mage::throwException($this->_getHelper()->__('Sorry ! '.$title.' Service is not available in your area'));
+*/
+			Mage::throwException($this->_getHelper()->__('Apologies, but we are unable to offer cash payment as an option for your pincode area. Please choose a different payment option.'));
 		}
 		return $this;
 	}
@@ -57,7 +77,22 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 			Mage::throwException($this->_getHelper()->__($e->getMessage()));
 		}
 	}
-	public function authorize(Varien_Object $payment, $amount)
+	
+	public function isAvailable($quote=null)
+    {
+        if (!parent::isAvailable($quote)) {
+            return false;
+        }
+        if (!is_null($quote)) {
+            $country = $quote->getBillingAddress()->getCountry();
+            if (!($country=="IN")) {
+                return false;
+            }
+		}
+       return true;
+    }
+	
+	public function authorize(Varien_Object $payment,$amount)
 	{
 		Mage::Log("authorize function is called");
 		$uri = Mage::getStoreConfig('payment/gpcashpayment/gharpay_uri',Mage::app()->getStore());
@@ -93,8 +128,9 @@ class Gharpay_Gpcashpayment_Model_Gpcreateorder extends Mage_Payment_Model_Metho
 			$i++;
 		}
 
+		// Normalise pincode to avoid 7 digit codes with space being passed to GharPay.
 		$orderDetails = array(
-				"pincode"=>$order->getBillingAddress()->getPostcode(),
+				"pincode"=>$gpAPI->normalisePincode($order->getBillingAddress()->getPostcode()),
 				"clientOrderID"=>$order->getIncrementId(),
 				"deliveryDate"=>$date->format('d-m-Y'),
 				"orderAmount"=>$order->getBaseGrandTotal()
