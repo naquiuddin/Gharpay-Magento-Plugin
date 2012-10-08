@@ -35,7 +35,7 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
     	Mage::Log("called addStatusToGharpayDb method");
         $go =  new Gharpay_Dbconns_Model_Gharpayorders();
         $gp =  new Gharpay_Dbconns_Model_Gharpayproperty();
-        $gpv =  new Gharpay_Dbconns_Model_Gharpaypropvalue();        
+        $gpv =  new Gharpay_Dbconns_Model_Gharpaypropvalue();
         $go= $go->getCollection();
         $go=$go->addFieldToFilter('gharpay_order_id',$gharpayOrderId);
         $gpid = $go->getFirstItem()->getData('gharpay_id');
@@ -67,9 +67,11 @@ class Gharpay_Gharpaypushnotification_Model_Pnotif extends Mage_Core_Model_Abstr
     public function addStatusToOrderGrid($increment_id,$status)
     {
     	Mage::Log("Called addStatusToOrderGrid method");
-        $og=Mage::getSingleton('core/resource')->getConnection('core_write');
-        $qry="update sales_flat_order_grid set gharpay_status='".$status."' where increment_id=".$increment_id;
-        Mage::Log("Order ID :".$increment_id."Status : ".$status);
+        $resource=Mage::getSingleton('core/resource');
+        $og=$resource->getConnection('core_write');
+        $table = $resource->getTableName('sales_flat_order_grid');
+        $qry="update ".$table." set gharpay_status='".$status."' where increment_id=".$increment_id;
+        Mage::Log("Order ID :".$increment_id." has been updated with Status : ".$status);
         Mage::Log($qry);
         $result=$og->query($qry);
     }
